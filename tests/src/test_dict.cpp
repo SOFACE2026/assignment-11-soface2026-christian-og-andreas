@@ -13,7 +13,7 @@ TEST_CASE("Test Dict")
     // For example inserting the 'same' person twice or removing an
     // non existent person from the dictionary.
     Dict<std::string, int> name_to_age;
-
+    REQUIRE(name_to_age.get("Hans") == std::nullopt);
     REQUIRE(name_to_age.len() == 0);
 
     name_to_age.set("Jane", 20);
@@ -21,8 +21,22 @@ TEST_CASE("Test Dict")
     REQUIRE(name_to_age.has("Jane"));
     REQUIRE(name_to_age.get("Jane").has_value());
     REQUIRE(name_to_age.get("Jane").value() == 20);
+
+
     REQUIRE_THAT(name_to_age.keys(), UnorderedEquals(std::vector<std::string>{"Jane"}));
     REQUIRE_THAT(name_to_age.values(), UnorderedEquals(std::vector<int>{20}));
 
+    name_to_age.del("Jane");
+    REQUIRE(name_to_age.len()==0);
+    REQUIRE(name_to_age.get("Jane") == std::nullopt);
+
     name_to_age.set("Tarzan", 25);
+    REQUIRE(name_to_age.len()==1);
+    name_to_age.del("Jane");
+    REQUIRE(name_to_age.len()==1);
+
+    REQUIRE(name_to_age.get("Tarzan").value() == 25);
+    name_to_age.set("Tarzan", 99);
+    REQUIRE(name_to_age.len()==1);
+    REQUIRE(name_to_age.get("Tarzan").value() == 99);
 }
