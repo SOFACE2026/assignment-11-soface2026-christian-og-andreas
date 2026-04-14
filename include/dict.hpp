@@ -15,6 +15,9 @@
 template <class K, class V>
 class Dict
 {
+private:
+    std::vector<K> keys_vector;
+    std::vector<V> values_vector;
 
 public:
     /**
@@ -26,6 +29,11 @@ public:
      */
     void set(K key, V val)
     {
+        if(this->has(key)){
+            this->del(key);
+        }
+        this->keys_vector.push_back(key);
+        this->values_vector.push_back(val);
     }
 
     /**
@@ -37,7 +45,11 @@ public:
      */
     bool has(K key) const
     {
-        return false;
+        if(std::find(this->keys_vector.begin(), this->keys_vector.end(), key) != this->keys_vector.end()) {
+                return true;
+            } else {
+                return false;
+            }
     }
 
     /**
@@ -47,7 +59,7 @@ public:
      */
     size_t len()
     {
-        return 0;
+        return this->keys_vector.size();
     }
 
     /**
@@ -58,8 +70,14 @@ public:
      * @return value associated with key.
      */
     std::optional<V> get(K key) const
-    {
-        return {};
+    {   
+        if(this->has(key)){
+            int index = std::find(this->keys_vector.begin(), this->keys_vector.end(), key) - this->keys_vector.begin();
+            return this->values_vector[index];
+        }
+        else{
+            return std::nullopt;
+        }
     }
 
     /**
@@ -72,6 +90,13 @@ public:
      */
     void del(K key)
     {
+        if(!this->has(key)){
+            return; 
+        }
+
+        int index = std::find(this->keys_vector.begin(), this->keys_vector.end(), key) - this->keys_vector.begin();
+        this->keys_vector.erase(index+this->keys_vector.begin());
+        this->values_vector.erase(index+this->values_vector.begin());
     }
 
     /**
@@ -81,7 +106,7 @@ public:
      */
     std::vector<K> keys()
     {
-        return {};
+        return this->keys_vector;
     }
 
     /**
@@ -91,6 +116,6 @@ public:
      */
     std::vector<V> values()
     {
-        return {};
+        return this->values_vector;
     }
 };
